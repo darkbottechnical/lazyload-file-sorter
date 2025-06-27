@@ -1,7 +1,7 @@
 import os
 import shutil
 import logging
-import pymsgbox
+from win10toast import ToastNotifier
 
 from time import sleep
 from contextlib import contextmanager
@@ -23,6 +23,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
+toaster = ToastNotifier()
 
 @contextmanager
 def _movedir(dir):
@@ -40,7 +41,7 @@ def run_overrides(file: File):
             match = matcher.check(file)
         except Exception as e:
             logger.error(f"Error in matcher {matcher.call.__name__} for file {file.name}: {e}")
-            pymsgbox.alert(f"Error in matcher {matcher.call.__name__} for file {file.name}: {e}", "Sorter Error")
+            toaster.show_toast("Sorter Error", f"Error in matcher {matcher.call.__name__} for file {file.name}: {e}", duration=5)
             continue
         if match:
             return match
@@ -64,6 +65,8 @@ def get_dst_dir(filename: str) -> str:
     return path
 
 def sorter():
+    not_found_counter = {}
+    threshold = 5
     with _movedir(CONFIG.DIRTOSORT):
         while True:
             for file in os.listdir():
@@ -72,7 +75,7 @@ def sorter():
                     dst_dir = run_overrides(File(name=file))
                 except Exception as e:
                     logger.error(f"Error running overrides for {file}: {e}")
-                    pymsgbox.alert(f"Error running overrides for {file}: {e}", "Sorter Error")
+                    toaster.show_toast("Sorter Error", f"Error running overrides for {file}: {e}", duration=5)
                     continue
                 if not dst_dir:
                     logger.info(f"No overrides found for {file}. Using specified directory.")
@@ -80,13 +83,19 @@ def sorter():
                 logger.info(f"Moving {src_dir} to {dst_dir}")
                 try:
                     shutil.move(src=src_dir, dst=dst_dir)
+                    # Reset counter on success
+                    not_found_counter.pop(dst_dir, None)
                 except FileNotFoundError:
                     logger.error(f"Destination {dst_dir} not found. Skipping {file}.")
-                    pymsgbox.alert(f"Destination {dst_dir} not found. Skipping {file}.", "Sorter Error")
+                    not_found_counter[dst_dir] = not_found_counter.get(dst_dir, 0) + 1
+                    if not_found_counter[dst_dir] >= threshold:
+                        toaster.show_toast("Sorter Error", f"Destination {dst_dir} not found {threshold} times. Exiting. Please check your config or folder structure.", duration=10)
+                        logger.error(f"Destination {dst_dir} not found {threshold} times. Exiting.")
+                        return
                     continue
                 except Exception as e:
                     logger.error(f"Error moving {src_dir} to {dst_dir}: {e}")
-                    pymsgbox.alert(f"Error moving {src_dir} to {dst_dir}: {e}", "Sorter Error")
+                    toaster.show_toast("Sorter Error", f"Error moving {src_dir} to {dst_dir}: {e}", duration=5)
                     continue
             sleep(10)
         
