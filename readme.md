@@ -1,6 +1,13 @@
 # Lazyload File Sorter
 ## Contents
 [Description](#Description)
+[Features](#Features)
+[Installation](#Installation)
+[Updating](#Updating)
+[Configuration](#Configuration)
+[Usage](#Usage)
+[License](LICENSE)
+
 ## Description
 Your downloads can be put in one place now! (Hopefully)
 
@@ -96,5 +103,3 @@ python main.py
 - [Optional] Compile to an executable with PyInstaller for easier startup.
 - Add a shortcut to the executable or `main.py` in the Windows Startup folder (`Win + R`, then `shell:startup`).
 
-## License
-[MIT](LICENSE)
