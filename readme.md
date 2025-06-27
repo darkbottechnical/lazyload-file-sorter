@@ -15,7 +15,7 @@ Your downloads can be put in one place now! (Hopefully)
 
 ```bash
 git clone https://github.com/darkbottechnical/lazyload-file-sorter
-cd unisort
+cd lazyload-file-sorter
 pip install -r requirements.txt
 ```
 
