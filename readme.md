@@ -19,6 +19,14 @@ cd lazyload-file-sorter
 pip install -r requirements.txt
 ```
 
+## Updating
+
+```bash
+cd lazyload-file-sorter
+git pull
+pip install -r requirements.txt
+```
+
 ## Configuration
 
 1. Edit `config.json` to set your root, sort, and destination folders.
