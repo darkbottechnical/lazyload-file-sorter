@@ -1,5 +1,6 @@
 # Lazyload File Sorter
-
+## Contents
+[Description](#Description)
 ## Description
 Your downloads can be put in one place now! (Hopefully)
 
