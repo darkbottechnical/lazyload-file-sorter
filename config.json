@@ -23,9 +23,7 @@
         "installer_packages": ["dmg", "pkg", "appx", "xapk"]
     },
     "overrides": {
-        "reqrmbg": "call:rmbg",
         "ismusic": "path:audio/music",
-        "issfx": "path:audio/sfx",
-        "isdisposable": "path:images/disposable"
+        "issfx": "path:audio/sfx"
     }
 }
